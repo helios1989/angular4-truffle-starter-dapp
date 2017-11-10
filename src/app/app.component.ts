@@ -2,6 +2,7 @@ import { Component, HostListener, NgZone } from '@angular/core';
 const Web3 = require('web3');
 const contract = require('truffle-contract');
 const metaincoinArtifacts = require('../../build/contracts/MetaCoin.json');
+const Test1Artifcats = require('../../build/contracts/Test1.json');
 import { canBeNumber } from '../util/validation';
 
 declare var window: any;
@@ -12,7 +13,7 @@ declare var window: any;
 })
 export class AppComponent {
   MetaCoin = contract(metaincoinArtifacts);
-
+  Test1 = contract(Test1Artifcats);
   // TODO add proper types these variables
   account: any;
   accounts: any;
@@ -23,7 +24,7 @@ export class AppComponent {
   recipientAddress: string;
   status: string;
   canBeNumber = canBeNumber;
-
+  myname: string;
   constructor(private _ngZone: NgZone) {
 
   }
@@ -56,7 +57,7 @@ export class AppComponent {
   onReady = () => {
     // Bootstrap the MetaCoin abstraction for Use.
     this.MetaCoin.setProvider(this.web3.currentProvider);
-
+    this.Test1.setProvider(this.web3.currentProvider);
     // Get the initial account balance so it can be displayed.
     this.web3.eth.getAccounts((err, accs) => {
       if (err != null) {
@@ -99,6 +100,20 @@ export class AppComponent {
         this.setStatus('Error getting balance; see log.');
       });
   };
+
+  getName = () => {
+    let test1;
+   
+    this.Test1
+    .deployed()
+    .then(instance => {
+      test1 = instance;
+      test1.setName('VERGE');
+      this.myname = test1.name();
+      return test1.name();
+    });
+
+  }
 
   setStatus = message => {
     this.status = message;
